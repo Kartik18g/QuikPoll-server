@@ -5,7 +5,6 @@ import express from 'express'
 import cors from 'cors'
 import http from 'http'
 import socketIo from 'socket.io'
-import shortid from 'shortid';
 import { connectDB } from './mongodb/connectDb'
 import userRoutes from './routes/user'
 import pollRoutes from './routes/poll'
@@ -20,7 +19,9 @@ app.use('/user',userRoutes)
 app.use('/poll',pollRoutes)
 
 const server = http.createServer(app);
-const io = socketIo(server); 
+const io = socketIo(server,{
+  path:"/production"
+}); 
 const port = process.env.PORT || 8080
 
 let interval;
@@ -29,21 +30,17 @@ let users = 0;
 
 io.on("connection", (socket) => {
   console.log("client connected")
-  users++;
   socket.on("disconnect", () => {
     console.log("Client disconnected");
     clearInterval(interval);
   });
 });
 
-export {io}
+// app.get('/connect',(req,res)=>{
+//   console.log('connected-->')
+//   res.send("connection established")
+// })
 
-app.get('/user', (req, res) => {
-    users++;
-    res.send({
-      role:users===1?1:0,
-      id:shortid.generate(),
-    })
-})
+export {io}
 
 server.listen(port, () => console.log(`Listening on port ${port}`));

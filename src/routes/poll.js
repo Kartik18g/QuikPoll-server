@@ -174,12 +174,6 @@ router.get("/:id", async (req, res) => {
                       },
                     },
                   },
-                  // {
-                  //   $project: {
-                  //     _id: 1,
-                  //     text: 1,
-                  //   },
-                  // },
                 ],
                 as: "options",
               },
